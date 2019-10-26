@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>圖片庫修改頁面</title>
+        <meta charset="big5">
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"></link>
+        <script src="/js/jquery/jquery.min.js"></script>
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+        <style>
+            .container {
+                padding-top: 25px;
+                text-align: center;
+                overflow-x: hidden;
+            }
+            .container button {
+                vertical-align: top;
+                width: 100%;
+                height: 75px;
+                font-size: 35px;
+                font-family: Microsoft JhengHei;
+                background-color: #E0E0E0;
+            }
+            .container input {
+                padding: 0px 10px 0px 10px;
+                width: 100%;
+                height: 75px;
+                font-size: 30px;
+                font-family: Microsoft JhengHei;
+            }
+            .PageTitle span{
+                font-size: 50px;
+                font-weight: bold;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .TableFieldName {
+                text-align: center;
+            }
+            .TableFieldName span {
+                font-size: 20px;
+                font-weight: bold;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .TableFieldName input {
+                padding: 0px 5px 0px 5px;
+                font-size: 20px;
+                width: 90%;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .FileSettings {
+                vertical-align: center;
+            }
+            .FileSettings input {
+                width: 100%;
+                height: 50px;
+                font-size: 20px;
+            }
+            .FileSettings button {
+                width: 100%;
+                height: 50px;
+                font-size: 20px;
+            }
+            .row {
+                padding-bottom: 20px;
+            }
+            p {
+                border-color: #E0E0E0;
+                border-width: 2px;
+                border-style: solid;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="PageTitle col-md-8 col-xs-8">
+                    <span>圖片庫修改頁面</span>
+                </div>
+            </div>
+            <div class="row">
+                <p></p>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-xs-4"></div>
+                <div class="col-md-4 col-xs-4">
+                    <button id="RefreshButton" onclick="GetPictureList()" class="btn btn-default">更新清單</button>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 10px">
+                <p></p>
+            </div>
+            <div class="row" id="FileSettings" style="display: none;">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="FileSettings col-md-1 col-xs-1" style="text-align: left;">
+                    <img id="FileOjbectImage" style="width: 50px; height: 50px;" />
+                </div>
+                <div class="FileSettings col-md-5 col-xs-5">
+                    <input id="FileObjectName" readonly="readonly" value="" />
+                </div>
+                <div class="FileSettings col-md-2 col-xs-2">
+                    <button type="button" onclick="CallSettingsModal(this)" class="btn btn-default" data-toggle="modal" data-target="#FileSettingsModal">
+                        修改
+                    </button>
+                </div>
+            </div>
+            <div id="FileSettingsList">
+            </div>
+        </div>
+
+        <div class="modal fade" id="FileSettingsModal" role="dialog" aria-labelledby="FileSettingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="FileSettingsModalTitle"></h3>
+                    </div>
+                    <div class="modal-body" id="DataTableFieldNameList">
+                        <div class="row TableFieldNameObject" style="padding-bottom: 10px;">
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <span>card_name</span>
+                            </div>
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <input />
+                            </div>
+                        </div>
+                        <div class="row TableFieldNameObject" style="padding-bottom: 10px;">
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <span>card_price</span>
+                            </div>
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <input />
+                            </div>
+                        </div>
+                        <div class="row TableFieldNameObject" style="padding-bottom: 10px;">
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <span>component_price</span>
+                            </div>
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <input />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        <button type="button" onclick="SaveFileSettings()" class="btn btn-primary" data-dismiss="modal">送出修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+    function GetPictureList() {
+        var PostRequest = "GetPictureList";
+        var PostData = "";
+        var HttpRequest = new XMLHttpRequest();
+
+        document.getElementById("FileSettingsList").innerHTML = "";
+
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                var PictureList = HttpRequest.responseText.split(", ");
+
+                for(i = 0; i < PictureList.length; i++) {
+                    var PictureName = PictureList[i].split("/");
+
+                    PictureName = PictureName[PictureName.length - 1];
+                    FileSettingsDivAdd(PictureList[i], PictureName, i);
+                }
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+
+    function FileSettingsDivAdd(FileObjectImageSrc, FileObjectName, FileObjectIndex) {
+        var FileSettingsDivNew = document.createElement("div");
+
+        FileSettingsDivNew.id = FileObjectName;
+        FileSettingsDivNew.className = "FileSettings row";
+        FileSettingsDivNew.innerHTML = document.getElementById("FileSettings").innerHTML;
+        FileSettingsDivNew.getElementsByClassName("FileSettings")[0].getElementsByTagName("img")[0].src = FileObjectImageSrc;
+        FileSettingsDivNew.getElementsByClassName("FileSettings")[1].getElementsByTagName("input")[0].value = FileObjectName;
+        document.getElementById("FileSettingsList").appendChild(FileSettingsDivNew);
+    }
+
+    function CallSettingsModal(FileObjectID) {
+        var DataTableFieldNameList = document.getElementById("DataTableFieldNameList").getElementsByClassName("TableFieldNameObject");
+        var FileName = FileObjectID.parentElement.parentElement.id;
+        var PostRequest = "GetAssignDataTable";
+        var PostData = encodeURI(FileName);
+        var HttpRequest = new XMLHttpRequest();
+
+        document.getElementById("FileSettingsModalTitle").innerHTML = FileName;
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                var FileSettingsData = JSON.parse(HttpRequest.responseText);
+
+                for(i = 0; i < DataTableFieldNameList.length; i++) {
+                    var TableFieldName = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
+
+                    TableFieldName[1].getElementsByTagName("input")[0].value = FileSettingsData[TableFieldName[0].getElementsByTagName("span")[0].innerHTML];
+                }
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+
+    function SaveFileSettings() {
+        var FileSettingsData = {};
+        var FileSettingsDataKey = document.getElementById("FileSettingsModalTitle").innerHTML;
+        var DataTableFieldNameList = document.getElementById("DataTableFieldNameList").getElementsByClassName("TableFieldNameObject");
+
+        for(i = 0; i < DataTableFieldNameList.length; i++) {
+		    var DataTableField = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
+            var DataKey = DataTableField[0].getElementsByTagName("span")[0].innerHTML;
+            var DataValue = DataTableField[1].getElementsByTagName("input")[0].value;
+
+            FileSettingsData[DataKey] = DataValue;
+        }
+		FileSettingsData["card_img"] = FileSettingsDataKey;
+		FileSettingsUpload(FileSettingsDataKey, FileSettingsData);
+    }
+
+    function FileSettingsUpload(FileName, FileSettings) {
+        var PostRequest = "ImageEditFileSettingsUpload";
+        var PostData = encodeURI(JSON.stringify(FileSettings));
+        var HttpRequest = new XMLHttpRequest();
+
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                console.log(HttpRequest.responseText);
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+    </script>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>類別庫新增頁面</title>
+        <meta charset="big5">
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"></link>
+        <script src="/js/jquery/jquery.min.js"></script>
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+        <style>
+            .container {
+                padding-top: 25px;
+                text-align: center;
+                overflow-x: hidden;
+            }
+            .container button {
+                vertical-align: top;
+                width: 100%;
+                height: 75px;
+                font-size: 35px;
+                font-family: Microsoft JhengHei;
+                background-color: #E0E0E0;
+            }
+            .container input {
+                padding: 0px 10px 0px 10px;
+                width: 100%;
+                height: 75px;
+                font-size: 30px;
+                font-family: Microsoft JhengHei;
+            }
+            .PageTitle span{
+                font-size: 50px;
+                font-weight: bold;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .TableFieldName {
+                text-align: center;
+            }
+            .TableFieldName span {
+                font-size: 20px;
+                font-weight: bold;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .TableFieldName input {
+                padding: 0px 5px 0px 5px;
+                font-size: 20px;
+                width: 90%;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .TableFieldName select {
+                padding: 0px 5px 0px 5px;
+                font-size: 20px;
+                width: 90%;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .FileSettings {
+                vertical-align: center;
+            }
+            .FileSettings input {
+                width: 100%;
+                height: 50px;
+                font-size: 20px;
+            }
+            .FileSettings button {
+                width: 100%;
+                height: 50px;
+                font-size: 20px;
+            }
+            .row {
+                padding-bottom: 20px;
+            }
+            p {
+                border-color: #E0E0E0;
+                border-width: 2px;
+                border-style: solid;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="PageTitle col-md-8 col-xs-8">
+                    <span>類別庫新增頁面</span>
+                </div>
+            </div>
+            <div class="row">
+                <p></p>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="col-md-4 col-xs-4">
+                    <input id="UploadFile" onchange="FileStatusCheck('UploadFile')" multiple="multiple" style="display:none;" type="file"></input>
+                    <button id="UploadFileChooseButton" onclick="FileChoose('UploadFile')" class="btn btn-default">選擇圖片</button>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <button id="UploadButton" onclick="FileUploadStart('UploadFile')" class="btn btn-default" disabled>新增</button>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 10px">
+                <p></p>
+            </div>
+            <div class="row" id="FileSettings" style="display: none;">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="FileSettings col-md-1 col-xs-1" style="text-align: left;">
+                    <img id="FileOjbectImage" style="width: 50px; height: 50px;" />
+                </div>
+                <div class="FileSettings col-md-5 col-xs-5">
+                    <input id="FileObjectName" readonly="readonly" value="" />
+                </div>
+                <div class="FileSettings col-md-2 col-xs-2">
+                    <button type="button" onclick="CallSettingsModal(this)" class="btn btn-default" data-toggle="modal" data-target="#FileSettingsModal">
+                        未設定
+                    </button>
+                </div>
+            </div>
+            <div id="FileSettingsList">
+            </div>
+        </div>
+
+        <div class="modal fade" id="FileSettingsModal" role="dialog" aria-labelledby="FileSettingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="FileSettingsModalTitle"></h3>
+                    </div>
+                    <div class="modal-body" id="DataTableFieldNameList">
+                        <div class="row TableFieldNameObject" style="padding-bottom: 10px;">
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <span>name</span>
+                            </div>
+                            <div class="TableFieldName col-md-6 col-xs-6">
+                                <input />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        <button type="button" onclick="SaveFileSettings()" class="btn btn-primary" data-dismiss="modal">儲存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+    var FileSettingsDataList = {};
+
+    function FileChoose(FileInput) {
+        var FileInput = document.getElementById(FileInput);
+
+        FileInput.value = "";
+        document.getElementById('UploadFile').click();
+    }
+
+    function FileStatusCheck(FileInput) {
+        var FileInput = document.getElementById(FileInput);
+
+        document.getElementById('FileSettingsList').innerHTML = "";
+
+        if (FileInput.files.length != 0) {
+            for (i = 0; i < FileInput.files.length; i++) {
+                ImageRead(FileInput.files[i], i);
+            }
+            FileSettingsDataList = {};
+        }
+    }
+
+    function ImageRead(FileObject, Index) {
+        var ImageReader = new FileReader();
+        var FileObjectName = FileObject.name;
+        var FileObjectIndex = Index;
+
+        ImageReader.readAsDataURL(FileObject);
+
+        ImageReader.onload = function (e) {
+            FileSettingsDivAdd(e.target.result, FileObjectName, FileObjectIndex);
+        }
+    }
+
+    function FileSettingsDivAdd(FileObjectImageSrc, FileObjectName, FileObjectIndex) {
+        var FileSettingsDivNew = document.createElement("div");
+
+        FileSettingsDivNew.id = FileObjectName;
+        FileSettingsDivNew.className = "FileSettings row";
+        FileSettingsDivNew.innerHTML = document.getElementById("FileSettings").innerHTML;
+        FileSettingsDivNew.getElementsByClassName("FileSettings")[0].getElementsByTagName("img")[0].src = FileObjectImageSrc;
+        FileSettingsDivNew.getElementsByClassName("FileSettings")[1].getElementsByTagName("input")[0].value = FileObjectName;
+        document.getElementById("FileSettingsList").appendChild(FileSettingsDivNew);
+    }
+
+    function CallSettingsModal(FileObjectID) {
+        var DataTableFieldNameList = document.getElementById("DataTableFieldNameList").getElementsByClassName("TableFieldNameObject");
+        var FileName = FileObjectID.parentElement.parentElement.id;
+
+        document.getElementById("FileSettingsModalTitle").innerHTML = FileName;
+
+        for (i = 0; i < DataTableFieldNameList.length; i++) {
+            var DataTableField = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
+
+            if (!FileSettingsDataList.hasOwnProperty(FileName)) {
+                DataTableField[1].getElementsByTagName("input")[0].value = "";
+            } else {
+                var DataTableKey = DataTableField[0].getElementsByTagName("span")[0].innerHTML;
+
+                DataTableField[1].getElementsByTagName("input")[0].value = FileSettingsDataList[FileName][DataTableKey];
+            }
+        }
+    }
+
+    function SaveFileSettings() {
+        var FileSettingsData = {};
+        var FileSettingsDataKey = document.getElementById("FileSettingsModalTitle").innerHTML;
+        var DataTableFieldNameList = document.getElementById("DataTableFieldNameList").getElementsByClassName("TableFieldNameObject");
+
+        for(i = 0; i < DataTableFieldNameList.length; i++) {
+            var DataTableField = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
+            var DataKey = DataTableField[0].getElementsByTagName("span")[0].innerHTML;
+            var DataValue = "";
+
+            DataValue = DataTableField[1].getElementsByTagName("input")[0].value;
+
+            if(DataValue != "") {
+                FileSettingsData[DataKey] = DataValue;
+            }
+        }
+
+        if(Object.keys(FileSettingsData).length == DataTableFieldNameList.length) {
+            UploadButton.disabled = false;
+            FileSettingsDataList[FileSettingsDataKey] = FileSettingsData;
+            document.getElementById(FileSettingsDataKey).getElementsByClassName("FileSettings")[2].getElementsByTagName("button")[0].innerHTML = "已設定";
+            document.getElementById(FileSettingsDataKey).getElementsByClassName("FileSettings")[2].getElementsByTagName("button")[0].style.color = "#808080";
+        } else {
+            delete FileSettingsDataList[FileSettingsDataKey];
+            document.getElementById(FileSettingsDataKey).getElementsByClassName("FileSettings")[2].getElementsByTagName("button")[0].innerHTML = "未設定";
+            document.getElementById(FileSettingsDataKey).getElementsByClassName("FileSettings")[2].getElementsByTagName("button")[0].style.color = "#000000";
+
+            if(Object.keys(FileSettingsData).length == 0) {
+                UploadButton.disabled = true;
+            }
+        }
+    }
+
+    function FileUploadStart(FileInput) {
+        var FileInput = document.getElementById(FileInput);
+
+        for (i = 0; i < FileInput.files.length; i++) {
+            if (FileSettingsDataList.hasOwnProperty(FileInput.files[i].name)) {
+                FileUploadCheck(FileInput.files[i].name, FileInput.files[i]);
+            }
+        }
+    }
+
+    function FileUploadCheck(UploadFileName, FileInput) {
+        var PostRequest = "FileUploadCheck";
+        var PostData = UploadFileName;
+        var HttpRequest = new XMLHttpRequest();
+
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                var UploadFileNameNew = HttpRequest.responseText;
+
+                FileSettingsDataList[FileInput.name].icon = UploadFileNameNew;
+                FileUpload(UploadFileNameNew, FileInput, FileInput.name);
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+
+    function FileUpload(UploadFileName, FileObject, FileObjectName) {
+        var PostRequest = "";
+        var PostData = "";
+        var HttpRequest = new XMLHttpRequest();
+
+        PostRequest = "FileUpload/" + UploadFileName + ";";
+        PostData = FileObject;
+
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                FileSettingsUpload(FileObjectName, FileSettingsDataList[FileObjectName]);
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+
+    function FileSettingsUpload(FileName, FileSettings) {
+        var PostRequest = "TypeAddFileSettingsUpload";
+        var PostData = encodeURI(JSON.stringify(FileSettings));
+        var HttpRequest = new XMLHttpRequest();
+
+        HttpRequest.onreadystatechange = function() {
+            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
+                document.getElementById("FileSettingsList").removeChild(document.getElementById(FileName));
+                delete FileSettingsDataList[FileName];
+
+                if(Object.keys(FileSettingsDataList).length == 0) {
+                    UploadButton.disabled = true;
+                }
+            }
+        }
+
+        HttpRequest.open("POST", PostRequest, true);
+        HttpRequest.send(PostData);
+    }
+    </script>
+</html>
