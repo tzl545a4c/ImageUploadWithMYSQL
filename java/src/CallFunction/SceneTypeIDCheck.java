@@ -25,5 +25,6 @@ public class SceneTypeIDCheck {
 
 		Collections.sort(ScenesTypeIDList);
 		SystemBasicConfig.setSceneTypeIDMaximum(ScenesTypeIDList.get(ScenesTypeIDList.size() - 1));
+		System.out.println("Current Scene Type ID: " + SystemBasicConfig.getSceneTypeIDMaximum());
 	}
 }

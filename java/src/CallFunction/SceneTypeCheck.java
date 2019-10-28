@@ -23,5 +23,6 @@ public class SceneTypeCheck {
 		}
 		
 		SystemBasicConfig.setSceneTypeList(SceneTypeList);
+		System.out.println("Scene Type List: " + SystemBasicConfig.getSceneTypeList());
 	}
 }
