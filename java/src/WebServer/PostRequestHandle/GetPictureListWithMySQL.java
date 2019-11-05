@@ -23,11 +23,7 @@ public class GetPictureListWithMySQL {
 		QueryResultList.addAll(new MySQLTableQuery("wrapper", "scenes", "card_img", "").doQuery());
 
 		for (Map<String, Object> QueryResult : QueryResultList) {
-			String PicturePath = QueryResult.get("card_img").toString();
-
-			if (PicturePath.contains(FileUploadPathConfig.getUploadFilePath())) {
-				PictureList.add(FileUploadFolder + PicturePath.split(FileUploadFolder)[1]);
-			}
+			PictureList.add(FileUploadFolder + QueryResult.get("card_img").toString());
 		}
 
 		return PictureList.toString().substring(1, PictureList.toString().length() - 1);

@@ -1,14 +1,10 @@
 package WebServer.PostRequestHandle;
 
 import java.util.Map;
-
-import FileUpload.Config.FileUploadPathConfig;
-import MySQL.CallFunciton.MySQLTableQuery;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
+import java.net.URLDecoder;
+import java.io.UnsupportedEncodingException;
+import MySQL.CallFunciton.MySQLTableQuery;
 
 public class GetAssignDataTableWithMySQL {
 
@@ -24,8 +20,8 @@ public class GetAssignDataTableWithMySQL {
 	
 	public String doGet() {
 		String DataTableValue = "";
+		String FilePath = "";
 		Map<String, Object> DataTable = new HashMap<String, Object>();
-		String FilePath = new File(FileUploadPathConfig.getUploadFilePath()).getAbsolutePath().replace("\\", "/") + "/";
 
 		try {
 			FilePath += URLDecoder.decode(new String(this.PostData), "UTF-8");

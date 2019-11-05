@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>圖片庫新增頁面</title>
-        <meta charset="big5">
+        <title>萬寶龍內管系統 - 圖片庫新增</title>
+        <meta charset="utf-8">
         <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"></link>
         <script src="/js/jquery/jquery.min.js"></script>
         <script src="/js/bootstrap/bootstrap.min.js"></script>
@@ -175,21 +175,6 @@
     var FileSettingsDataList = {};
 
     GetTypeList();
-
-    function PostTest() {
-        var PostRequest = "PostTest";
-        var PostData = "PostTest123";
-        var HttpRequest = new XMLHttpRequest();
-
-        HttpRequest.onreadystatechange = function() {
-            if(HttpRequest.readyState == 4 && HttpRequest.status == 200) {
-                console.log(HttpRequest.responseText);
-            }
-        }
-
-        HttpRequest.open("POST", PostRequest, true);
-        HttpRequest.send(PostData);
-    }
 
     function GetTypeList() {
         var PostRequest = "GetTypeList";

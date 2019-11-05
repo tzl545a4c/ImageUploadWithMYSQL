@@ -1,28 +1,13 @@
 var express = require('express');
 var WebServer = express();
-var WebServerRootPath = "web/"
+var WebServerRootPath = "/web"
 
-WebServer.get('/*.html', function (req, res) {
-	res.sendFile(__dirname + "/" + WebServerRootPath + req.url);
-})
+WebServer.use(express.static(__dirname + WebServerRootPath))
 
-WebServer.get('/*.js', function (req, res) {
-	res.sendFile(__dirname + "/" + WebServerRootPath + req.url);
-})
-
-WebServer.get('/*.css', function (req, res) {
-	res.sendFile(__dirname + "/" + WebServerRootPath + req.url);
-})
-
-WebServer.post('/*', function (req, res) {
-	var post = '';     
-
-    req.on('data', function(chunk){    
-		post += chunk;
-    });
- 
-    req.on('end', function(){    
-        console.log(post);
+WebServer.post('/PostTest', function (req, res) {
+    req.on('data', function (data) {
+        obj = JSON.parse(data);
+        res.send("Post OK");
     });
 })
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>萬寶龍內管系統</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"></link>
+        <script src="/js/jquery/jquery.min.js"></script>
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+        <style>
+            .container {
+                padding-top: 25px;
+                text-align: center;
+                overflow-x: hidden;
+            }
+            .PageTitle span{
+                font-size: 50px;
+                font-weight: bold;
+                vertical-align: center;
+                font-family: Microsoft JhengHei;
+            }
+            .container button {
+                vertical-align: top;
+                width: 60%;
+                height: 75px;
+                font-size: 35px;
+                font-family: Microsoft JhengHei;
+                background-color: #E0E0E0;
+            }
+            .row {
+                padding-bottom: 20px;
+            }
+            p {
+                border-color: #E0E0E0;
+                border-width: 2px;
+                border-style: solid;
+            }
+        </style>
+		
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-xs-2"></div>
+                <div class="PageTitle col-md-8 col-xs-8">
+                    <span>萬寶龍內管系統</span>
+                </div>
+            </div>
+            <div class="row">
+                <p></p>
+            </div>
+            <div class="row" style="padding-bottom: 30px;">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <button onclick="window.location.href='/ImageAdd.html'" class="btn btn-default">圖片庫新增頁面</button>
+                </div>
+            </div>
+            <div class="row" style="padding-bottom: 30px;">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <button onclick="window.location.href='/ImageEdit.html'" class="btn btn-default">圖片庫編輯頁面</button>
+                </div>
+            </div>
+            <div class="row" style="padding-bottom: 30px;">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <button onclick="window.location.href='/TypeAdd.html'" class="btn btn-default">類別庫新增頁面</button>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+	PostTest();
+	
+	function PostTest() {
+/*
+		$.post("PostTest", '{ "name": "John", "time": "2pm" }', function(response) {
+			console.log(response);
+		});
+*/
+		var PostData = {};
+		
+		PostData['Test'] = 123;
+		PostData['測試用'] = "測試";
+		
+		$.ajax({
+			url: 'PostTest',
+			type: 'POST',
+			data: JSON.stringify(PostData),
+			dataType: 'text',
+			success: function(response){
+				console.log(response);
+			}
+		});
+	}
+	</script>
+</html>

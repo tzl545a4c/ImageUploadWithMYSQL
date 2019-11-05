@@ -2,12 +2,10 @@ package WebServer.PostRequestHandle;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import FileUpload.Config.FileUploadPathConfig;
 import MySQL.CallFunciton.MySQLTableDataAdd;
 import MySQL.CallFunciton.MySQLTableQuery;
 import MySQL.Config.ScenesTableModel;
@@ -30,7 +28,6 @@ public class ImageAddFileSettingsUpload {
 	public String doUpload() {
 		String FileSettings = "";
 		String SettingsDataValue = "";
-		String UploadPicturePath = new File(FileUploadPathConfig.getUploadFilePath()).getAbsolutePath() + "/";
 		Map<String, Object> FileSettingsObject = new HashMap<String, Object>();
 		Map<String, Object> FileTypeSettingsObject = new HashMap<String, Object>();
 
@@ -55,19 +52,36 @@ public class ImageAddFileSettingsUpload {
 				FileSettingsObject.replace(DataName, new TypeNameConvert(DataName, SplitDataValue).doConvert());
 			}
 		}
-		FileTypeSettingsObject.putAll(new MySQLTableQuery("wrapper", "scene_type", "*", "`name` = \"" + FileSettingsObject.get("type") + "\"").doQuery().get(0));
+		
+		FileTypeSettingsObject.putAll(new MySQLTableQuery("wrapper", "scene_type", "*", "name = \'" + FileSettingsObject.get("type").toString() + "\'").doQuery().get(0));
+		
+//		FileTypeSettingsObjectList.addAll(new MySQLTableQuery("wrapper", "scene_type", "*", "").doQuery());
+//		
+//		for(int i = 0; i < FileTypeSettingsObjectList.size(); i++) {
+//			if (FileTypeSettingsObjectList.get(i).get("name").equals(FileSettingsObject.get("type"))) {
+//				FileTypeSettingsObject = FileTypeSettingsObjectList.get(i);
+//				break;
+//			}
+//		}
+		
 		SystemBasicConfig.setSceneIDMaximum(SystemBasicConfig.getSceneIDMaximum() + 1);
 		FileSettingsObject.replace("id", SystemBasicConfig.getSceneIDMaximum());
 		FileSettingsObject.replace("home_id", FileTypeSettingsObject.get("home_id"));
 		FileSettingsObject.replace("scene_type_id", FileTypeSettingsObject.get("id"));
-		FileSettingsObject.replace("component_img", UploadPicturePath + FileSettingsObject.get("home_id") + "-" + FileSettingsObject.get("card_img").toString());
-		FileSettingsObject.replace("card_img", UploadPicturePath + FileSettingsObject.get("card_img").toString());
+		FileSettingsObject.replace("component_img", FileSettingsObject.get("home_id") + "-" + FileSettingsObject.get("card_img").toString());
+		FileSettingsObject.replace("card_img", FileSettingsObject.get("card_img").toString());
 		FileSettingsObject.replace("created_at", new GetSystemDateTime().CustomGet("yyyy-MM-dd HH:mm:ss"));
 		FileSettingsObject.replace("updated_at", new GetSystemDateTime().CustomGet("yyyy-MM-dd HH:mm:ss"));
 
 		for (Field DataName : ScenesTableModel.class.getDeclaredFields()) {
 			if (DataName.getType().getSimpleName().toLowerCase().equals("string") | DataName.getType().getSimpleName().toLowerCase().equals("timestamp")) {
-				SettingsDataValue += "'" + FileSettingsObject.get(DataName.getName()) + "', ";
+//				SettingsDataValue += "'" + FileSettingsObject.get(DataName.getName()) + "', ";
+				
+				try {
+					SettingsDataValue += "'" + new String(FileSettingsObject.get(DataName.getName()).toString().getBytes(), "ISO8859_1") + "', ";
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
 			} else if (DataName.getType().getSimpleName().toLowerCase().equals("double")) {
 				SettingsDataValue += new BigDecimal(Double.parseDouble(FileSettingsObject.get(DataName.getName()).toString())).toPlainString() + ", ";
 			} else {

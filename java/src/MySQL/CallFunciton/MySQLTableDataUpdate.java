@@ -27,6 +27,7 @@ public class MySQLTableDataUpdate {
 		Statement MySQLState = null;
 
 		SQLCommand = "UPDATE `" + this.TableName + "` SET " + this.UpdateDataValue + " WHERE " + this.UpdataCondition;
+		System.out.println("Update Command: " + SQLCommand);
 
 		try {
 			MySQLState = MySQLConnection.createStatement();

@@ -1,15 +1,11 @@
 package WebServer.PostRequestHandle;
 
 import java.util.Map;
-
-import CallFunction.SceneTypeCheck;
-
 import java.util.HashMap;
-import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import FileUpload.Config.FileUploadPathConfig;
+import CallFunction.SceneTypeCheck;
 import MySQL.CallFunciton.MySQLTableDataAdd;
 import MySQL.Config.SceneTypeTableModel;
 import System.Config.SystemBasicConfig;
@@ -31,7 +27,6 @@ public class TypeAddFileSettingsUpload {
 	public String doUpload() {
 		String FileSettings = "";
 		String SettingsDataValue = "";
-		String UploadPicturePath = new File(FileUploadPathConfig.getUploadFilePath()).getAbsolutePath() + "/";
 		Map<String, Object> FileSettingsObject = new HashMap<String, Object>();
 		
 		// Decode Data with UTF8
@@ -59,7 +54,7 @@ public class TypeAddFileSettingsUpload {
 		SystemBasicConfig.setSceneTypeIDMaximum(SystemBasicConfig.getSceneTypeIDMaximum() + 1);
 		FileSettingsObject.replace("id", SystemBasicConfig.getSceneTypeIDMaximum());
 		FileSettingsObject.replace("home_id", 1);
-		FileSettingsObject.replace("icon", UploadPicturePath + FileSettingsObject.get("home_id") + "-" + FileSettingsObject.get("id") + "-" + FileSettingsObject.get("icon").toString());
+		FileSettingsObject.replace("icon", FileSettingsObject.get("home_id") + "-" + FileSettingsObject.get("id") + "-" + FileSettingsObject.get("icon").toString());
 		FileSettingsObject.replace("created_at", new GetSystemDateTime().CustomGet("yyyy-MM-dd HH:mm:ss"));
 		FileSettingsObject.replace("updated_at", new GetSystemDateTime().CustomGet("yyyy-MM-dd HH:mm:ss"));
 		

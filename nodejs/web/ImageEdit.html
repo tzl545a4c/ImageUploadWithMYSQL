@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>圖片庫修改頁面</title>
-        <meta charset="big5">
+        <title>萬寶龍內管系統 - 圖片庫修改</title>
+        <meta charset="utf-8">
         <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css"></link>
         <script src="/js/jquery/jquery.min.js"></script>
         <script src="/js/bootstrap/bootstrap.min.js"></script>
@@ -168,7 +168,10 @@
                     var PictureName = PictureList[i].split("/");
 
                     PictureName = PictureName[PictureName.length - 1];
-                    FileSettingsDivAdd(PictureList[i], PictureName, i);
+
+                    if (PictureName != "") {
+                        FileSettingsDivAdd(PictureList[i], PictureName, i);
+                    }
                 }
             }
         }
@@ -218,14 +221,14 @@
         var DataTableFieldNameList = document.getElementById("DataTableFieldNameList").getElementsByClassName("TableFieldNameObject");
 
         for(i = 0; i < DataTableFieldNameList.length; i++) {
-		    var DataTableField = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
+            var DataTableField = DataTableFieldNameList[i].getElementsByClassName("TableFieldName");
             var DataKey = DataTableField[0].getElementsByTagName("span")[0].innerHTML;
             var DataValue = DataTableField[1].getElementsByTagName("input")[0].value;
 
             FileSettingsData[DataKey] = DataValue;
         }
-		FileSettingsData["card_img"] = FileSettingsDataKey;
-		FileSettingsUpload(FileSettingsDataKey, FileSettingsData);
+        FileSettingsData["card_img"] = FileSettingsDataKey;
+        FileSettingsUpload(FileSettingsDataKey, FileSettingsData);
     }
 
     function FileSettingsUpload(FileName, FileSettings) {

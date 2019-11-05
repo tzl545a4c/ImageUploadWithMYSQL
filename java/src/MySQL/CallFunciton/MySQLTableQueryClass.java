@@ -42,8 +42,8 @@ public class MySQLTableQueryClass {
 			MySQLState = MySQLConnection.createStatement();
 			MySQLState.executeQuery(QueryCommand);
 			MySQLResult = MySQLState.getResultSet();
-			
-     		while(MySQLResult.next()) {
+
+			while(MySQLResult.next()) {
      			Map<String, Object> QueryResult = new HashMap<String, Object>(); 
      			
      			for(int i = 0; i < MySQLResult.getMetaData().getColumnCount(); i++) {

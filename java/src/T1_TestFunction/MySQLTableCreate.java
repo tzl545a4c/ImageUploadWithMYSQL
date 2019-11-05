@@ -24,9 +24,9 @@ public class MySQLTableCreate {
 			MySQLState = MySQLConnector.createStatement();
 			MySQLState.executeUpdate(SQLCommand);
 			MySQLResult = MySQLState.getResultSet();
-     		while(MySQLResult.next()) {
-     			System.out.println(MySQLResult);
-     		}
+			while (MySQLResult.next()) {
+				System.out.println(MySQLResult);
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}

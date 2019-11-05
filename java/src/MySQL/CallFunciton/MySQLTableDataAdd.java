@@ -25,6 +25,7 @@ public class MySQLTableDataAdd {
 		Statement MySQLState = null;
 
 		SQLCommand = "INSERT INTO `" + this.TableName + "` VALUES (" + this.DataValue + ")";
+		System.out.println("INSERT Command: " + SQLCommand);
 
 		try {
 			MySQLState = MySQLConnection.createStatement();

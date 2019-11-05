@@ -29,7 +29,7 @@ public class MySQLTableQuery {
 
 	public ArrayList<Map<String, Object>> doQuery() {
 		ArrayList<Map<String, Object>> QueryResultList = new ArrayList<Map<String, Object>>();
-		String QueryCommand = "";
+		String SQLCommand = "";
 		Statement MySQLState = null;
 		ResultSet MySQLResult = null;
 		Connection MySQLConnection = new MySQLConnector(this.DataBaseName).doConnect();
@@ -38,11 +38,12 @@ public class MySQLTableQuery {
 			this.QueryCondition = "1";
 		}
 		
-		QueryCommand = "SELECT " + this.FieldName + " FROM `" + this.TableName + "` WHERE " + this.QueryCondition;
+		SQLCommand = "SELECT " + this.FieldName + " FROM `" + this.TableName + "` WHERE " + this.QueryCondition;
+		System.out.println("SELECT Command: " + SQLCommand);
 
 		try {
 			MySQLState = MySQLConnection.createStatement();
-			MySQLState.executeQuery(QueryCommand);
+			MySQLState.executeQuery(SQLCommand);
 			MySQLResult = MySQLState.getResultSet();
 
 			while (MySQLResult.next()) {
@@ -51,7 +52,7 @@ public class MySQLTableQuery {
 				for (int i = 0; i < MySQLResult.getMetaData().getColumnCount(); i++) {
 					String ResultFieldName = MySQLResult.getMetaData().getColumnLabel(i + 1);
 					Object ResultFieldValue = MySQLResult.getObject(i + 1);
-
+					
 					if (ResultFieldValue != null) {
 						QueryResult.put(ResultFieldName, new TypeNameConvert(ResultFieldValue.getClass().getSimpleName(), ResultFieldValue).doConvert());
 					} else {

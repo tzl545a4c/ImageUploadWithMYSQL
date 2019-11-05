@@ -2,12 +2,10 @@ package WebServer.PostRequestHandle;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.io.File;
 import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import FileUpload.Config.FileUploadPathConfig;
 import MySQL.CallFunciton.MySQLTableDataUpdate;
 import MySQL.CallFunciton.MySQLTableQuery;
 import MySQL.Config.ScenesTableModel;
@@ -30,7 +28,6 @@ public class ImageEditFileSettingsUpload {
 		String FileSettings = "";
 		String UpdateDataValue = "";
 		String UpdataCondition = "";
-		String FilePath = new File(FileUploadPathConfig.getUploadFilePath()).getAbsolutePath().replace("\\", "/") + "/";
 		Map<String, Object> FileSettingsObjectNew = new HashMap<String, Object>();
 		Map<String, Object> FileSettingsObjectQueryResult = new HashMap<String, Object>();
 
@@ -51,10 +48,9 @@ public class ImageEditFileSettingsUpload {
 				FileSettingsObjectNew.put(DataName.getName(), new TypeNameConvert(DataName.getType().getSimpleName(), SplitDataValue).doConvert());
 			}
 		}
-		FilePath += FileSettingsObjectNew.get("card_img");
 		FileSettingsObjectNew.remove("card_img");
 		FileSettingsObjectNew.put("updated_at", new GetSystemDateTime().CustomGet("yyyy-MM-dd HH:mm:ss"));
-		FileSettingsObjectQueryResult.putAll(new MySQLTableQuery("wrapper", "scenes", "*", "`card_img` = \"" + FilePath + "\"").doQuery().get(0));
+		FileSettingsObjectQueryResult.putAll(new MySQLTableQuery("wrapper", "scenes", "*", "`card_img` = \"" + FileSettingsObjectNew.get("card_img") + "\"").doQuery().get(0));
 
 		for (Field DataName : ScenesTableModel.class.getDeclaredFields()) {
 			if (FileSettingsObjectNew.containsKey(DataName.getName())) {
