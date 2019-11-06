@@ -55,15 +55,6 @@ public class ImageAddFileSettingsUpload {
 		
 		FileTypeSettingsObject.putAll(new MySQLTableQuery("wrapper", "scene_type", "*", "name = \'" + FileSettingsObject.get("type").toString() + "\'").doQuery().get(0));
 		
-//		FileTypeSettingsObjectList.addAll(new MySQLTableQuery("wrapper", "scene_type", "*", "").doQuery());
-//		
-//		for(int i = 0; i < FileTypeSettingsObjectList.size(); i++) {
-//			if (FileTypeSettingsObjectList.get(i).get("name").equals(FileSettingsObject.get("type"))) {
-//				FileTypeSettingsObject = FileTypeSettingsObjectList.get(i);
-//				break;
-//			}
-//		}
-		
 		SystemBasicConfig.setSceneIDMaximum(SystemBasicConfig.getSceneIDMaximum() + 1);
 		FileSettingsObject.replace("id", SystemBasicConfig.getSceneIDMaximum());
 		FileSettingsObject.replace("home_id", FileTypeSettingsObject.get("home_id"));
@@ -75,13 +66,7 @@ public class ImageAddFileSettingsUpload {
 
 		for (Field DataName : ScenesTableModel.class.getDeclaredFields()) {
 			if (DataName.getType().getSimpleName().toLowerCase().equals("string") | DataName.getType().getSimpleName().toLowerCase().equals("timestamp")) {
-//				SettingsDataValue += "'" + FileSettingsObject.get(DataName.getName()) + "', ";
-				
-				try {
-					SettingsDataValue += "'" + new String(FileSettingsObject.get(DataName.getName()).toString().getBytes(), "ISO8859_1") + "', ";
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+				SettingsDataValue += "'" + FileSettingsObject.get(DataName.getName()) + "', ";
 			} else if (DataName.getType().getSimpleName().toLowerCase().equals("double")) {
 				SettingsDataValue += new BigDecimal(Double.parseDouble(FileSettingsObject.get(DataName.getName()).toString())).toPlainString() + ", ";
 			} else {
